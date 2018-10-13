@@ -1,0 +1,40 @@
+.App {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.my-canvas {
+    border: 1px solid black;
+    border-radius: 5px;
+    height: 100%;
+    width: calc(100% - 200px);
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100px;
+}
+
+.button {
+    height: 60px;
+    width: 100%;
+}
+
+.button-active {
+    color: red;
+    height: 60px;
+    width: 100%;
+}
+
+.input {
+    height: 60px;
+    width: 96%;
+}
+
+.output {
+    height: 60px;
+    width: 100%;
+}
