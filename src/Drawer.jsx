@@ -557,7 +557,7 @@ class Drawer extends PureComponent {
         const scalar = (a0.x - a1.x) * (b0.x - b1.x) + (a0.y - a1.y) * (b0.y - b1.y);
         const cosAlpha = scalar / (a.length * b.length);
 
-        const alpha = Math.acos(cosAlpha) * 180 / Math.PI
+        const alpha = Math.acos(cosAlpha) * 180 / Math.PI;
 
         return alpha <= 90 ? alpha : 180 - alpha;
     }

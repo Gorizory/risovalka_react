@@ -148,7 +148,7 @@ class App extends PureComponent {
 
     _setOutputValue(value) {
         this.setState({
-            outputValue: value,
+            outputValue: value.toFixed(3),
         });
     }
 }
