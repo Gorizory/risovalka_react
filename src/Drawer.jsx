@@ -49,6 +49,8 @@ class Drawer extends PureComponent {
         this._changeTool = this._changeTool.bind(this);
         this._getPoint = this._getPoint.bind(this);
         this._updateState = this._updateState.bind(this);
+
+        props.onInit(this._updateState);
     }
 
     componentDidMount() {
@@ -566,8 +568,8 @@ class Drawer extends PureComponent {
         this.props.update({data, operation}, this._updateState);
     }
 
-    _updateState() {
-
+    _updateState(data) {
+        console.log(data); // TODO: add updating
     }
 }
 

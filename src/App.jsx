@@ -3,6 +3,10 @@ import React, {
 } from 'react';
 import './App.css';
 import Drawer from './Drawer';
+import Spinner from './Spinner/Spinner';
+
+const SERVER_LOCATION = 'localhost';
+const SERVER_PORT = 65432;
 
 export const Tools = {
     Drag: 'drag',
@@ -28,12 +32,18 @@ class App extends PureComponent {
             inputValue: undefined,
             outputValue: undefined,
             tool: Tools.Point,
+            isConnected: false,
         };
 
+        this._connect = this._connect.bind(this);
         this._setInputValue = this._setInputValue.bind(this);
         this._setOutputValue = this._setOutputValue.bind(this);
         this._update = this._update.bind(this);
         this._setTool = this._setTool.bind(this);
+    }
+
+    async componentDidMount() {
+        this._connect(`ws:${SERVER_LOCATION}:${SERVER_PORT}`)
     }
 
     render() {
@@ -41,12 +51,14 @@ class App extends PureComponent {
             inputValue,
             outputValue,
             tool,
+            isConnected,
         } = this.state;
 
         const drawerProps = {
             inputValue,
             tool,
             tools: Tools,
+            onInit: updateState => this._updateState = updateState,
             setOutputValue: this._setOutputValue,
             update: this._update,
         };
@@ -56,69 +68,77 @@ class App extends PureComponent {
             tool === Tools.DistanceBetweenPoints || tool === Tools.AngleBetweenLines;
 
         return (
-            <div className="App">
-                <canvas className={'my-canvas'} id={'myCanvas'}/>
-                <Drawer {...drawerProps}/>
-                <div className={'buttons'}>
-                    <button onClick={() => this._setTool(Tools.Point)} className={buttonClassName(Tools.Point)}>
-                        Point
-                    </button>
-                    <button onClick={() => this._setTool(Tools.Line)} className={buttonClassName(Tools.Line)}>
-                        Line
-                    </button>
-                    <button onClick={() => this._setTool(Tools.Drag)} className={buttonClassName(Tools.Drag)}>
-                        Drag
-                    </button>
-                    <button onClick={() => this._setTool(Tools.Connect)} className={buttonClassName(Tools.Connect)}>
-                        Connect
-                    </button>
-                    <button onClick={() => this._setTool(Tools.Vertical)} className={buttonClassName(Tools.Vertical)}>
-                        Vertical
-                    </button>
-                    <button onClick={() => this._setTool(Tools.Horizontal)}
-                            className={buttonClassName(Tools.Horizontal)}>
-                        Horizontal
-                    </button>
-                    <button onClick={() => this._setTool(Tools.Parallel)} className={buttonClassName(Tools.Parallel)}>
-                        Parallel
-                    </button>
-                    <button onClick={() => this._setTool(Tools.Perpendicular)}
-                            className={buttonClassName(Tools.Perpendicular)}>
-                        Perpendicular
-                    </button>
-                    <button onClick={() => this._setTool(Tools.AttachPointToLine)}
-                            className={buttonClassName(Tools.AttachPointToLine)}>
-                        Attach point to line
-                    </button>
-                    <button onClick={() => this._setTool(Tools.AngleBetweenLines)}
-                            className={buttonClassName(Tools.AngleBetweenLines)}>
-                        Set angle between lines
-                    </button>
-                    <button onClick={() => this._setTool(Tools.DistanceBetweenPoints)}
-                            className={buttonClassName(Tools.DistanceBetweenPoints)}>
-                        Set distance between points
-                    </button>
-                    <input
-                        id={'input'}
-                        type={'number'}
-                        onInput={() => this._setInputValue()}
-                        disabled={!inputDisabled()}
-                        className={'input'}
-                    />
-                </div>
-                <div className={'buttons'}>
-                    <button onClick={() => this._setTool(Tools.GetAngleBetweenLines)}
-                            className={buttonClassName(Tools.GetAngleBetweenLines)}>
-                        Get angle between lines
-                    </button>
-                    <button onClick={() => this._setTool(Tools.GetDistanceBetweenPoints)}
-                            className={buttonClassName(Tools.GetDistanceBetweenPoints)}>
-                        Get distance between points
-                    </button>
-                    <div className={'output'}>
-                        Output: {outputValue}
+            <div className={'app'}>
+                {!isConnected && <Spinner/>}
+                {isConnected && (
+                    <div className={'wrapper'}>
+                        <canvas className={'my-canvas'} id={'myCanvas'}/>
+                        < Drawer {...drawerProps}/>
+                        <div className={'buttons'}>
+                            <button onClick={() => this._setTool(Tools.Point)} className={buttonClassName(Tools.Point)}>
+                                Point
+                            </button>
+                            <button onClick={() => this._setTool(Tools.Line)} className={buttonClassName(Tools.Line)}>
+                                Line
+                            </button>
+                            <button onClick={() => this._setTool(Tools.Drag)} className={buttonClassName(Tools.Drag)}>
+                                Drag
+                            </button>
+                            <button onClick={() => this._setTool(Tools.Connect)}
+                                    className={buttonClassName(Tools.Connect)}>
+                                Connect
+                            </button>
+                            <button onClick={() => this._setTool(Tools.Vertical)}
+                                    className={buttonClassName(Tools.Vertical)}>
+                                Vertical
+                            </button>
+                            <button onClick={() => this._setTool(Tools.Horizontal)}
+                                    className={buttonClassName(Tools.Horizontal)}>
+                                Horizontal
+                            </button>
+                            <button onClick={() => this._setTool(Tools.Parallel)}
+                                    className={buttonClassName(Tools.Parallel)}>
+                                Parallel
+                            </button>
+                            <button onClick={() => this._setTool(Tools.Perpendicular)}
+                                    className={buttonClassName(Tools.Perpendicular)}>
+                                Perpendicular
+                            </button>
+                            <button onClick={() => this._setTool(Tools.AttachPointToLine)}
+                                    className={buttonClassName(Tools.AttachPointToLine)}>
+                                Attach point to line
+                            </button>
+                            <button onClick={() => this._setTool(Tools.AngleBetweenLines)}
+                                    className={buttonClassName(Tools.AngleBetweenLines)}>
+                                Set angle between lines
+                            </button>
+                            <button onClick={() => this._setTool(Tools.DistanceBetweenPoints)}
+                                    className={buttonClassName(Tools.DistanceBetweenPoints)}>
+                                Set distance between points
+                            </button>
+                            <input
+                                id={'input'}
+                                type={'number'}
+                                onInput={() => this._setInputValue()}
+                                disabled={!inputDisabled()}
+                                className={'input'}
+                            />
+                        </div>
+                        <div className={'buttons'}>
+                            <button onClick={() => this._setTool(Tools.GetAngleBetweenLines)}
+                                    className={buttonClassName(Tools.GetAngleBetweenLines)}>
+                                Get angle between lines
+                            </button>
+                            <button onClick={() => this._setTool(Tools.GetDistanceBetweenPoints)}
+                                    className={buttonClassName(Tools.GetDistanceBetweenPoints)}>
+                                Get distance between points
+                            </button>
+                            <div className={'output'}>
+                                Output: {outputValue}
+                            </div>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         );
     }
@@ -129,14 +149,14 @@ class App extends PureComponent {
         })
     }
 
-    _update(data, updateState) {
+    _update(data) {
         this.setState({
             inputValue: undefined,
         });
         document.getElementById('input').value = '';
 
         console.log(data);
-        updateState();
+        this._socket.send(JSON.stringify(data));
     }
 
     _setInputValue() {
@@ -150,6 +170,36 @@ class App extends PureComponent {
         this.setState({
             outputValue: value.toFixed(3),
         });
+    }
+
+    _connect(websocketServerLocation) {
+        try{
+            this._socket = new WebSocket(websocketServerLocation);
+        } catch (err) {}
+        this._socket.onopen = () => {
+            console.log('Connection established');
+            this.setState({
+                isConnected: true,
+            });
+        };
+        this._socket.onmessage = (event) => {
+            this._updateState(event.data);
+        };
+        this._socket.onclose = async (event) => {
+            if (this.state.isConnected) {
+                if (event.wasClean) {
+                    console.log('Connection finished')
+                } else {
+                    console.log('Connection lost')
+                }
+            }
+
+            this.setState({
+                isConnected: false,
+            });
+            console.log('Retry connection in 5 seconds');
+            setTimeout(() => this._connect(websocketServerLocation), 5000);
+        };
     }
 }
 
