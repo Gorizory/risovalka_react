@@ -193,7 +193,6 @@ class App extends PureComponent {
                     console.log('Connection lost')
                 }
             }
-
             this.setState({
                 isConnected: false,
             });

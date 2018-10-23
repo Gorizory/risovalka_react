@@ -141,10 +141,12 @@ class Drawer extends PureComponent {
             this._onChange({
                     uid: lineUid,
                     point1: {
+                        uid: point1Uid,
                         x: point1.position.x,
                         y: point1.position.y,
                     },
                     point2: {
+                        uid: point2Uid,
                         x: point2.position.x,
                         y: point2.position.y,
                     }
@@ -197,10 +199,12 @@ class Drawer extends PureComponent {
                         this._onChange({
                                 uid: point.lineUid,
                                 point1: {
+                                    uid: this._lines[point.lineUid].endPoints[0],
                                     x: this._lines[point.lineUid].segments[0].point.x,
                                     y: this._lines[point.lineUid].segments[0].point.y,
                                 },
                                 point2: {
+                                    uid: this._lines[point.lineUid].endPoints[1],
                                     x: this._lines[point.lineUid].segments[1].point.x,
                                     y: this._lines[point.lineUid].segments[1].point.y,
                                 },
