@@ -155,7 +155,10 @@ class App extends PureComponent {
         this.setState({
             inputValue: undefined,
         });
-        document.getElementById('input').value = '';
+        const input = document.getElementById('input');
+        if (input) {
+            input.value = '';
+        }
 
         console.log(data);
         this._socket.send(JSON.stringify(data));

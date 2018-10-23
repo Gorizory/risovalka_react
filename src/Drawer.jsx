@@ -602,40 +602,25 @@ class Drawer extends PureComponent {
 
             if (this._points[elementUid]) {
                 const oldPoint = this._points[elementUid];
+                const newPoint = new Point(element.x, element.y);
 
-                oldPoint.point = element;
-                oldPoint.position = element;
+                oldPoint.point = newPoint;
+                oldPoint.position = newPoint;
             } else if (this._lines[elementUid]) {
                 const oldLine = this._lines[elementUid];
                 const oldPoint1 = this._points[oldLine.endPoints[0]];
                 const oldPoint2 = this._points[oldLine.endPoints[1]];
+                const newPoint1 = new Point(element.point1.x, element.point1.y);
+                const newPoint2 = new Point(element.point2.x, element.point2.y);
 
-                oldPoint1.point = {
-                    x: element.point1.x,
-                    y: element.point1.y,
-                };
-                oldPoint1.circle.position = {
-                    x: element.point1.x,
-                    y: element.point1.y,
-                };
+                oldPoint1.point = newPoint1;
+                oldPoint1.circle.position = newPoint1;
 
-                oldPoint2.point = {
-                    x: element.point2.x,
-                    y: element.point2.y,
-                };
-                oldPoint2.circle.position = {
-                    x: element.point2.x,
-                    y: element.point2.y,
-                };
+                oldPoint2.point = newPoint2;
+                oldPoint2.circle.position = newPoint2;
 
-                oldLine.segments[0].point = {
-                    x: element.point1.x,
-                    y: element.point1.y,
-                };
-                oldLine.segments[1].point = {
-                    x: element.point2.x,
-                    y: element.point2.y,
-                };
+                oldLine.segments[0].point = newPoint1;
+                oldLine.segments[1].point = newPoint2;
             } else {
                 if (element.x && element.y) {
                     const path = new paper.Path.Ellipse({
@@ -644,7 +629,7 @@ class Drawer extends PureComponent {
                         fillColor: 'black'
                     });
                     this._points[elementUid] = {
-                        point: element,
+                        point: new Point(element.x, element.y),
                         circle: path,
                         type: geomTypes.Point,
                     };
@@ -670,7 +655,7 @@ class Drawer extends PureComponent {
                         type: geomTypes.EndPoint,
                         segment: 0,
                         circle: point1,
-                        elementUid,
+                        lineUid: elementUid,
                     };
 
                     const point2 = new paper.Path.Ellipse({
@@ -683,7 +668,7 @@ class Drawer extends PureComponent {
                         type: geomTypes.EndPoint,
                         segment: 1,
                         circle: point2,
-                        elementUid,
+                        lineUid: elementUid,
                     };
                 }
             }
