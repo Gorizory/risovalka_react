@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import paper from 'paper';
 import {
     PureComponent,
@@ -49,6 +50,8 @@ class Drawer extends PureComponent {
         this._changeTool = this._changeTool.bind(this);
         this._getPoint = this._getPoint.bind(this);
         this._updateState = this._updateState.bind(this);
+
+        this._update = _.throttle(this.props.update, 100);
 
         props.onInit(this._updateState);
     }
@@ -167,10 +170,34 @@ class Drawer extends PureComponent {
                 switch (point.type) {
                     case geomTypes.Point:
                         point.circle.position = event.point;
+                        this._onChange({
+                                uid: pointUid,
+                                point: {
+                                    x: event.point.x,
+                                    y: event.point.y,
+                                },
+                            },
+                            eventTypes.DragPoint,
+                        );
                         break;
                     case geomTypes.EndPoint:
                         point.circle.position = event.point;
                         this._lines[point.lineUid].segments[point.segment].point = event.point;
+                        this._onChange({
+                                uid: point.lineUid,
+                                point1: {
+                                    uid: this._lines[point.lineUid].endPoints[0],
+                                    x: this._lines[point.lineUid].segments[0].point.x,
+                                    y: this._lines[point.lineUid].segments[0].point.y,
+                                },
+                                point2: {
+                                    uid: this._lines[point.lineUid].endPoints[1],
+                                    x: this._lines[point.lineUid].segments[1].point.x,
+                                    y: this._lines[point.lineUid].segments[1].point.y,
+                                },
+                            },
+                            eventTypes.DragLine,
+                        );
                         break;
                     default:
                         break;
@@ -569,7 +596,7 @@ class Drawer extends PureComponent {
     }
 
     _onChange(data, operation) {
-        this.props.update({data, operation}, this._updateState);
+        this._update({data, operation});
     }
 
     _updateState(data) {

@@ -119,6 +119,8 @@ class App extends PureComponent {
                             <input
                                 id={'input'}
                                 type={'number'}
+                                min={0}
+                                max={90}
                                 onInput={() => this._setInputValue()}
                                 disabled={!inputDisabled()}
                                 className={'input'}
