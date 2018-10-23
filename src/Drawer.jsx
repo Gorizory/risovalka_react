@@ -327,7 +327,7 @@ class Drawer extends PureComponent {
                                 uid1: line1Uid,
                                 uid2: line2Uid,
                             },
-                            eventTypes.Perpendicular,
+                            eventTypes.Parallel,
                         )
                     }
                 }
