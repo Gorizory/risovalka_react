@@ -7,7 +7,6 @@ import v4 from 'uuid/v4';
 
 const Tool = paper.Tool;
 const Point = paper.Point;
-let view = undefined;
 
 const geomTypes = {
     Point: 'point',
@@ -60,8 +59,6 @@ class Drawer extends PureComponent {
         const canvas = document.getElementById('myCanvas');
         paper.setup(canvas);
 
-        view = paper.view;
-
         this._tools[this.props.tools.Point] = new Tool();
         this._tools[this.props.tools.Point].onMouseDown = (event) => {
             const uid = v4();
@@ -75,7 +72,6 @@ class Drawer extends PureComponent {
                 circle: path,
                 type: geomTypes.Point,
             };
-            view.draw();
 
             this._onChange({
                     uid,
@@ -139,7 +135,6 @@ class Drawer extends PureComponent {
                 circle: point2,
                 lineUid,
             };
-            view.draw();
 
             this._onChange({
                     uid: lineUid,
@@ -600,7 +595,99 @@ class Drawer extends PureComponent {
     }
 
     _updateState(data) {
-        console.log(data); // TODO: add updating
+        console.log(data);
+        data.forEach(elementObj => {
+            const elementUid = Object.keys(elementObj)[0];
+            const element = elementObj[elementUid];
+
+            if (this._points[elementUid]) {
+                const oldPoint = this._points[elementUid];
+
+                oldPoint.point = element;
+                oldPoint.position = element;
+            } else if (this._lines[elementUid]) {
+                const oldLine = this._lines[elementUid];
+                const oldPoint1 = this._points[oldLine.endPoints[0]];
+                const oldPoint2 = this._points[oldLine.endPoints[1]];
+
+                oldPoint1.point = {
+                    x: element.point1.x,
+                    y: element.point1.y,
+                };
+                oldPoint1.circle.position = {
+                    x: element.point1.x,
+                    y: element.point1.y,
+                };
+
+                oldPoint2.point = {
+                    x: element.point2.x,
+                    y: element.point2.y,
+                };
+                oldPoint2.circle.position = {
+                    x: element.point2.x,
+                    y: element.point2.y,
+                };
+
+                oldLine.segments[0].point = {
+                    x: element.point1.x,
+                    y: element.point1.y,
+                };
+                oldLine.segments[1].point = {
+                    x: element.point2.x,
+                    y: element.point2.y,
+                };
+            } else {
+                if (element.x && element.y) {
+                    const path = new paper.Path.Ellipse({
+                        point: new Point(element.x - 2.5, element.y - 2.5),
+                        size: [5, 5],
+                        fillColor: 'black'
+                    });
+                    this._points[elementUid] = {
+                        point: element,
+                        circle: path,
+                        type: geomTypes.Point,
+                    };
+                } else {
+                    const path = new paper.Path({
+                        strokeColor: 'black',
+                    });
+                    path.moveTo(element.point1.x, element.point1.y);
+                    path.lineTo(element.point2.x, element.point2.y);
+                    path.endPoints = [
+                        element.point1.uid,
+                        element.point2.uid,
+                    ];
+                    this._lines[elementUid] = path;
+
+                    const point1 = new paper.Path.Ellipse({
+                        point: new Point(path._segments[0]._point._x - 2.5, path._segments[0]._point._y - 2.5),
+                        size: [5, 5],
+                        fillColor: 'black'
+                    });
+                    this._points[element.point1.uid] = {
+                        point: new Point(path._segments[0]._point._x, path._segments[0]._point._y),
+                        type: geomTypes.EndPoint,
+                        segment: 0,
+                        circle: point1,
+                        elementUid,
+                    };
+
+                    const point2 = new paper.Path.Ellipse({
+                        point: new Point(path._segments[1]._point._x - 2.5, path._segments[1]._point._y - 2.5),
+                        size: [5, 5],
+                        fillColor: 'black'
+                    });
+                    this._points[element.point2.uid] = {
+                        point: new Point(path._segments[1]._point._x, path._segments[1]._point._y),
+                        type: geomTypes.EndPoint,
+                        segment: 1,
+                        circle: point2,
+                        elementUid,
+                    };
+                }
+            }
+        });
     }
 }
 

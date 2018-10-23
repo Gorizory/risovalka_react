@@ -185,7 +185,8 @@ class App extends PureComponent {
             });
         };
         this._socket.onmessage = (event) => {
-            this._updateState(event.data);
+            const data = JSON.parse(event.data);
+            this._updateState(data);
         };
         this._socket.onclose = async (event) => {
             if (this.state.isConnected) {
