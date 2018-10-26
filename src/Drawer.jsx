@@ -274,7 +274,7 @@ class Drawer extends PureComponent {
             }
 
             if (!point1Uid) {
-                point1Uid = this._getPoint(event.point, true);
+                point1Uid = this._getPoint(event.point);
                 if (point1Uid) {
                     this._points[point1Uid].circle.fullySelected = true;
                 }
@@ -285,16 +285,20 @@ class Drawer extends PureComponent {
                     if (point1Uid !== point2Uid) {
                         this._onChange({
                                 point1: {
-                                    uid: this._points[point1Uid].lineUid,
-                                    pointNum: this._points[point1Uid].segment,
+                                    uid: this._points[point1Uid].type === geomTypes.EndPoint
+                                        ? this._points[point1Uid].lineUid
+                                        : point1Uid,
+                                    pointNum: this._points[point1Uid].type === geomTypes.EndPoint
+                                        ? this._points[point1Uid].segment + 1
+                                        : null,
                                 },
                                 point2: {
                                     uid: this._points[point2Uid].type === geomTypes.EndPoint
                                         ? this._points[point2Uid].lineUid
                                         : point2Uid,
                                     pointNum: this._points[point2Uid].type === geomTypes.EndPoint
-                                        ? this._points[point2Uid].segment
-                                        : undefined,
+                                        ? this._points[point2Uid].segment + 1
+                                        : null,
                                 }
                             },
                             eventTypes.Connect,
@@ -605,7 +609,7 @@ class Drawer extends PureComponent {
                 const newPoint = new Point(element.x, element.y);
 
                 oldPoint.point = newPoint;
-                oldPoint.position = newPoint;
+                oldPoint.circle.position = newPoint;
             } else if (this._lines[elementUid]) {
                 const oldLine = this._lines[elementUid];
                 const oldPoint1 = this._points[oldLine.endPoints[0]];
