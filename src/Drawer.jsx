@@ -414,7 +414,7 @@ class Drawer extends PureComponent {
                         this._onChange({
                                 uid1: line1Uid,
                                 uid2: line2Uid,
-                                angle: this.props.inputValue,
+                                angle: parseFloat(this.props.inputValue),
                             },
                             eventTypes.AngleBetweenLines,
                         )
