@@ -285,23 +285,26 @@ class Drawer extends PureComponent {
                     if (point1Uid !== point2Uid) {
                         this._onChange({
                                 point1: {
-                                    uid: this._points[point1Uid].type === geomTypes.EndPoint
+                                    uid: point1Uid,
+                                    parent: this._points[point1Uid].type === geomTypes.EndPoint
                                         ? this._points[point1Uid].lineUid
-                                        : point1Uid,
+                                        : null,
                                     pointNum: this._points[point1Uid].type === geomTypes.EndPoint
                                         ? this._points[point1Uid].segment + 1
                                         : null,
                                 },
                                 point2: {
-                                    uid: this._points[point2Uid].type === geomTypes.EndPoint
+                                    uid: point2Uid,
+                                    parent: this._points[point2Uid].type === geomTypes.EndPoint
                                         ? this._points[point2Uid].lineUid
-                                        : point2Uid,
+                                        : null,
                                     pointNum: this._points[point2Uid].type === geomTypes.EndPoint
                                         ? this._points[point2Uid].segment + 1
                                         : null,
-                                }
+                                },
+                                distance: 0.0,
                             },
-                            eventTypes.Connect,
+                            eventTypes.DistanceBetweenPoints,
                         )
                     }
                 }
@@ -447,9 +450,25 @@ class Drawer extends PureComponent {
                     this._points[point1Uid].circle.fullySelected = false;
                     if (point1Uid !== point2Uid) {
                         this._onChange({
-                                uid1: point1Uid,
-                                uid2: point2Uid,
-                                dist: this.props.inputValue,
+                                point1: {
+                                    uid: point1Uid,
+                                    parent: this._points[point1Uid].type === geomTypes.EndPoint
+                                        ? this._points[point1Uid].lineUid
+                                        : null,
+                                    pointNum: this._points[point1Uid].type === geomTypes.EndPoint
+                                        ? this._points[point1Uid].segment + 1
+                                        : null,
+                                },
+                                point2: {
+                                    uid: point2Uid,
+                                    parent: this._points[point2Uid].type === geomTypes.EndPoint
+                                        ? this._points[point2Uid].lineUid
+                                        : null,
+                                    pointNum: this._points[point2Uid].type === geomTypes.EndPoint
+                                        ? this._points[point2Uid].segment + 1
+                                        : null,
+                                },
+                                distance: parseFloat(this.props.inputValue),
                             },
                             eventTypes.DistanceBetweenPoints,
                         )
