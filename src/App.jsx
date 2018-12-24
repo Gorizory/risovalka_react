@@ -203,7 +203,7 @@ class App extends PureComponent {
                 isConnected: false,
             });
             console.log('Retry connection in 5 seconds');
-            setTimeout(() => this._connect(websocketServerLocation), 5000);
+            setTimeout(() => this._connect(websocketServerLocation), 1000);
         };
     }
 }

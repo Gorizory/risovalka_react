@@ -290,7 +290,7 @@ class Drawer extends PureComponent {
                                         ? this._points[point1Uid].lineUid
                                         : null,
                                     pointNum: this._points[point1Uid].type === geomTypes.EndPoint
-                                        ? this._points[point1Uid].segment
+                                        ? this._points[point1Uid].segment + 1
                                         : null,
                                 },
                                 point2: {
@@ -299,11 +299,12 @@ class Drawer extends PureComponent {
                                         ? this._points[point2Uid].lineUid
                                         : null,
                                     pointNum: this._points[point2Uid].type === geomTypes.EndPoint
-                                        ? this._points[point2Uid].segment
+                                        ? this._points[point2Uid].segment + 1
                                         : null,
-                                }
+                                },
+                                distance: 0.0,
                             },
-                            eventTypes.Connect,
+                            eventTypes.DistanceBetweenPoints,
                         )
                     }
                 }
@@ -449,9 +450,25 @@ class Drawer extends PureComponent {
                     this._points[point1Uid].circle.fullySelected = false;
                     if (point1Uid !== point2Uid) {
                         this._onChange({
-                                uid1: point1Uid,
-                                uid2: point2Uid,
-                                dist: this.props.inputValue,
+                                point1: {
+                                    uid: point1Uid,
+                                    parent: this._points[point1Uid].type === geomTypes.EndPoint
+                                        ? this._points[point1Uid].lineUid
+                                        : null,
+                                    pointNum: this._points[point1Uid].type === geomTypes.EndPoint
+                                        ? this._points[point1Uid].segment + 1
+                                        : null,
+                                },
+                                point2: {
+                                    uid: point2Uid,
+                                    parent: this._points[point2Uid].type === geomTypes.EndPoint
+                                        ? this._points[point2Uid].lineUid
+                                        : null,
+                                    pointNum: this._points[point2Uid].type === geomTypes.EndPoint
+                                        ? this._points[point2Uid].segment + 1
+                                        : null,
+                                },
+                                distance: parseFloat(this.props.inputValue),
                             },
                             eventTypes.DistanceBetweenPoints,
                         )
@@ -611,7 +628,7 @@ class Drawer extends PureComponent {
                 const newPoint = new Point(element.x, element.y);
 
                 oldPoint.point = newPoint;
-                oldPoint.position = newPoint;
+                oldPoint.circle.position = newPoint;
             } else if (this._lines[elementUid]) {
                 const oldLine = this._lines[elementUid];
                 const oldPoint1 = this._points[oldLine.endPoints[0]];
