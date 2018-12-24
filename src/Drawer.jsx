@@ -274,7 +274,7 @@ class Drawer extends PureComponent {
             }
 
             if (!point1Uid) {
-                point1Uid = this._getPoint(event.point, true);
+                point1Uid = this._getPoint(event.point);
                 if (point1Uid) {
                     this._points[point1Uid].circle.fullySelected = true;
                 }
@@ -285,16 +285,22 @@ class Drawer extends PureComponent {
                     if (point1Uid !== point2Uid) {
                         this._onChange({
                                 point1: {
-                                    uid: this._points[point1Uid].lineUid,
-                                    pointNum: this._points[point1Uid].segment,
+                                    uid: point1Uid,
+                                    parent: this._points[point1Uid].type === geomTypes.EndPoint
+                                        ? this._points[point1Uid].lineUid
+                                        : null,
+                                    pointNum: this._points[point1Uid].type === geomTypes.EndPoint
+                                        ? this._points[point1Uid].segment
+                                        : null,
                                 },
                                 point2: {
-                                    uid: this._points[point2Uid].type === geomTypes.EndPoint
+                                    uid: point2Uid,
+                                    parent: this._points[point2Uid].type === geomTypes.EndPoint
                                         ? this._points[point2Uid].lineUid
-                                        : point2Uid,
+                                        : null,
                                     pointNum: this._points[point2Uid].type === geomTypes.EndPoint
                                         ? this._points[point2Uid].segment
-                                        : undefined,
+                                        : null,
                                 }
                             },
                             eventTypes.Connect,
