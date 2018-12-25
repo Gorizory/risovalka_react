@@ -302,9 +302,8 @@ class Drawer extends PureComponent {
                                         ? this._points[point2Uid].segment + 1
                                         : null,
                                 },
-                                distance: 0.0,
                             },
-                            eventTypes.DistanceBetweenPoints,
+                            eventTypes.Connect,
                         )
                     }
                 }
